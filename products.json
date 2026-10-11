@@ -1,12 +1,82 @@
 [
-  {"id": 1, "category": "Смартфоны", "name": "Galaxy Nova 12", "description": "6.5\" AMOLED, 128 ГБ, тройная камера 50 Мп", "price": 34990, "emoji": "📱"},
-  {"id": 2, "category": "Смартфоны", "name": "Pixel Lite 8", "description": "6.1\" OLED, 256 ГБ, чистый Android", "price": 45990, "emoji": "📱"},
-  {"id": 3, "category": "Ноутбуки", "name": "AirBook 14", "description": "14\" IPS, 16 ГБ ОЗУ, SSD 512 ГБ", "price": 79990, "emoji": "💻"},
-  {"id": 4, "category": "Ноутбуки", "name": "GameForce 16", "description": "16\" 165 Гц, RTX, 32 ГБ ОЗУ, SSD 1 ТБ", "price": 139990, "emoji": "💻"},
-  {"id": 5, "category": "Наушники", "name": "SoundPods Pro", "description": "Беспроводные TWS, шумоподавление", "price": 9990, "emoji": "🎧"},
-  {"id": 6, "category": "Наушники", "name": "BassMax 700", "description": "Полноразмерные, Bluetooth 5.3, 40 ч работы", "price": 12490, "emoji": "🎧"},
-  {"id": 7, "category": "Часы", "name": "FitWatch 5", "description": "Пульс, SpO2, GPS, защита IP68", "price": 14990, "emoji": "⌚"},
-  {"id": 8, "category": "Аксессуары", "name": "PowerBank 20000", "description": "20000 мА·ч, быстрая зарядка 65 Вт", "price": 3490, "emoji": "🔋"},
-  {"id": 9, "category": "Аксессуары", "name": "Зарядка GaN 100 Вт", "description": "3 порта USB-C/USB-A", "price": 4290, "emoji": "🔌"},
-  {"id": 10, "category": "Аксессуары", "name": "Колонка Boom Mini", "description": "Портативная, 20 Вт, влагозащита", "price": 5990, "emoji": "🔊"}
+  {
+    "id": "python-course", "cat": "courses",
+    "title": "Python с нуля до junior", "subtitle": "Видеокурс · 42 урока",
+    "price": 490, "old": 790, "emoji": "🐍", "c1": "#2563eb", "c2": "#06b6d4",
+    "rating": 4.9, "sales": 1240, "tag": "Хит",
+    "desc": "Пошаговый курс: от переменных до собственного Telegram-бота и REST API. Каждый урок — короткое видео и практика.",
+    "features": ["42 видеоурока по 10–15 минут", "Домашние задания с разбором", "Доступ навсегда и все обновления"]
+  },
+  {
+    "id": "figma-course", "cat": "courses",
+    "title": "UI/UX-дизайн в Figma", "subtitle": "Курс · 28 уроков",
+    "price": 590, "old": 890, "emoji": "🧩", "c1": "#7c3aed", "c2": "#ec4899",
+    "rating": 4.8, "sales": 860, "tag": "−33%",
+    "desc": "Компоненты, автолейауты, дизайн-системы и прототипы. Соберёте портфолио из трёх кейсов.",
+    "features": ["28 уроков + исходники макетов", "3 проекта в портфолио", "Чат выпускников"]
+  },
+  {
+    "id": "vpn-year", "cat": "software",
+    "title": "VPN Premium на 1 год", "subtitle": "Ключ · до 5 устройств",
+    "price": 350, "old": null, "emoji": "🛡️", "c1": "#059669", "c2": "#0ea5e9",
+    "rating": 4.7, "sales": 3120, "tag": null,
+    "desc": "Быстрые серверы в 40 странах, без логов. Ключ активируется в приложении за минуту.",
+    "features": ["Подписка на 12 месяцев", "До 5 устройств одновременно", "Windows, macOS, iOS, Android"]
+  },
+  {
+    "id": "pdf-studio", "cat": "software",
+    "title": "PDF Studio Pro", "subtitle": "Лицензия навсегда",
+    "price": 420, "old": 560, "emoji": "📄", "c1": "#e11d48", "c2": "#f97316",
+    "rating": 4.6, "sales": 540, "tag": null,
+    "desc": "Редактирование, подпись, OCR и конвертация PDF. Одна покупка — без подписок.",
+    "features": ["Бессрочная лицензия", "Распознавание текста (OCR)", "Бесплатные обновления 1.x"]
+  },
+  {
+    "id": "cinema-luts", "cat": "design",
+    "title": "Кинематографичные LUT", "subtitle": "120 пресетов · .cube",
+    "price": 190, "old": 290, "emoji": "🎞️", "c1": "#f59e0b", "c2": "#ef4444",
+    "rating": 4.9, "sales": 2010, "tag": "New",
+    "desc": "Цветокоррекция в один клик для видео и фото. Работают в Premiere, DaVinci, Final Cut и Lightroom.",
+    "features": ["120 LUT в формате .cube", "Видеоинструкция по установке", "Коммерческая лицензия"]
+  },
+  {
+    "id": "glass-icons", "cat": "design",
+    "title": "3D-иконки Glass", "subtitle": "600 иконок · PNG + Blend",
+    "price": 260, "old": null, "emoji": "💎", "c1": "#0891b2", "c2": "#6366f1",
+    "rating": 4.8, "sales": 970, "tag": null,
+    "desc": "Стеклянные 3D-иконки для лендингов и приложений. Исходники в Blender — меняйте цвета и ракурс.",
+    "features": ["600 иконок в 4K PNG", "Исходные файлы Blender", "Свободное коммерческое использование"]
+  },
+  {
+    "id": "grotesk-fonts", "cat": "design",
+    "title": "Шрифты «Гротеск»", "subtitle": "8 начертаний · кириллица",
+    "price": 230, "old": null, "emoji": "✒️", "c1": "#475569", "c2": "#8b5cf6",
+    "rating": 4.7, "sales": 410, "tag": null,
+    "desc": "Современный гротеск с полной кириллицей и вариативной версией. Подходит для интерфейсов и брендинга.",
+    "features": ["8 начертаний + variable", "OTF, TTF, WOFF2", "Лицензия для веба и печати"]
+  },
+  {
+    "id": "neon-drift", "cat": "games",
+    "title": "Neon Drift", "subtitle": "PC · ключ активации",
+    "price": 299, "old": 449, "emoji": "🏎️", "c1": "#a855f7", "c2": "#f43f5e",
+    "rating": 4.7, "sales": 1530, "tag": "−33%",
+    "desc": "Аркадные гонки по ночному мегаполису с синтвейв-саундтреком. Сюжетная кампания и онлайн-заезды.",
+    "features": ["Ключ для активации на PC", "Кампания на 12+ часов", "Онлайн-мультиплеер"]
+  },
+  {
+    "id": "aurora-skins", "cat": "games",
+    "title": "Набор скинов «Аврора»", "subtitle": "DLC · 12 предметов",
+    "price": 120, "old": null, "emoji": "🗡️", "c1": "#14b8a6", "c2": "#a855f7",
+    "rating": 4.5, "sales": 2290, "tag": null,
+    "desc": "Светящиеся скины оружия и брони с анимированными эффектами северного сияния.",
+    "features": ["12 уникальных предметов", "Анимированные эффекты", "Мгновенная активация кодом"]
+  },
+  {
+    "id": "modern-js", "cat": "books",
+    "title": "Современный JavaScript", "subtitle": "E-book · PDF + EPUB",
+    "price": 150, "old": null, "emoji": "📘", "c1": "#1d4ed8", "c2": "#7c3aed",
+    "rating": 4.9, "sales": 2780, "tag": null,
+    "desc": "Практическое руководство по JS 2026: от замыканий до асинхронности и производительности.",
+    "features": ["480 страниц", "PDF и EPUB без DRM", "Примеры кода на GitHub"]
+  }
 ]
