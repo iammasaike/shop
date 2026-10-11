@@ -1,0 +1,12 @@
+[
+  {"id": 1, "category": "Смартфоны", "name": "Galaxy Nova 12", "description": "6.5\" AMOLED, 128 ГБ, тройная камера 50 Мп", "price": 34990, "emoji": "📱"},
+  {"id": 2, "category": "Смартфоны", "name": "Pixel Lite 8", "description": "6.1\" OLED, 256 ГБ, чистый Android", "price": 45990, "emoji": "📱"},
+  {"id": 3, "category": "Ноутбуки", "name": "AirBook 14", "description": "14\" IPS, 16 ГБ ОЗУ, SSD 512 ГБ", "price": 79990, "emoji": "💻"},
+  {"id": 4, "category": "Ноутбуки", "name": "GameForce 16", "description": "16\" 165 Гц, RTX, 32 ГБ ОЗУ, SSD 1 ТБ", "price": 139990, "emoji": "💻"},
+  {"id": 5, "category": "Наушники", "name": "SoundPods Pro", "description": "Беспроводные TWS, шумоподавление", "price": 9990, "emoji": "🎧"},
+  {"id": 6, "category": "Наушники", "name": "BassMax 700", "description": "Полноразмерные, Bluetooth 5.3, 40 ч работы", "price": 12490, "emoji": "🎧"},
+  {"id": 7, "category": "Часы", "name": "FitWatch 5", "description": "Пульс, SpO2, GPS, защита IP68", "price": 14990, "emoji": "⌚"},
+  {"id": 8, "category": "Аксессуары", "name": "PowerBank 20000", "description": "20000 мА·ч, быстрая зарядка 65 Вт", "price": 3490, "emoji": "🔋"},
+  {"id": 9, "category": "Аксессуары", "name": "Зарядка GaN 100 Вт", "description": "3 порта USB-C/USB-A", "price": 4290, "emoji": "🔌"},
+  {"id": 10, "category": "Аксессуары", "name": "Колонка Boom Mini", "description": "Портативная, 20 Вт, влагозащита", "price": 5990, "emoji": "🔊"}
+]

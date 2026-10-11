@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Электроника</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+  :root {
+    --bg: var(--tg-theme-bg-color, #ffffff);
+    --bg2: var(--tg-theme-secondary-bg-color, #f1f1f4);
+    --text: var(--tg-theme-text-color, #111111);
+    --hint: var(--tg-theme-hint-color, #8a8a8e);
+    --accent: var(--tg-theme-button-color, #2481cc);
+    --accent-text: var(--tg-theme-button-text-color, #ffffff);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: -apple-system, system-ui, "Segoe UI", Roboto, sans-serif;
+         background: var(--bg); color: var(--text); padding-bottom: 80px; }
+  header { padding: 14px 16px 6px; }
+  h1 { font-size: 20px; margin: 0; }
+  .tabs { display: flex; gap: 8px; overflow-x: auto; padding: 8px 16px 12px; scrollbar-width: none; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab { flex: none; border: 0; border-radius: 16px; padding: 7px 14px; font-size: 14px;
+         background: var(--bg2); color: var(--text); cursor: pointer; }
+  .tab.active { background: var(--accent); color: var(--accent-text); }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 16px; }
+  .card { background: var(--bg2); border-radius: 14px; padding: 12px; display: flex; flex-direction: column; }
+  .emoji { font-size: 44px; text-align: center; padding: 6px 0; }
+  .name { font-weight: 600; font-size: 15px; }
+  .desc { color: var(--hint); font-size: 12px; margin: 4px 0 8px; flex: 1; }
+  .price { font-weight: 700; margin-bottom: 8px; }
+  .btn { border: 0; border-radius: 10px; padding: 9px; font-size: 14px; font-weight: 600;
+         background: var(--accent); color: var(--accent-text); cursor: pointer; width: 100%; }
+  .qty { display: flex; align-items: center; justify-content: space-between; }
+  .qty button { width: 36px; height: 36px; border: 0; border-radius: 10px; font-size: 18px;
+                background: var(--accent); color: var(--accent-text); cursor: pointer; }
+  .qty span { font-weight: 700; }
+  .view { display: none; }
+  .view.active { display: block; }
+  .row { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-bottom: 1px solid var(--bg2); }
+  .row .emoji { font-size: 30px; padding: 0; }
+  .row .info { flex: 1; }
+  .row .qty { gap: 10px; }
+  .row .qty button { width: 30px; height: 30px; font-size: 16px; }
+  .total { padding: 14px 16px; font-size: 17px; font-weight: 700; display: flex; justify-content: space-between; }
+  form { padding: 0 16px; }
+  label { display: block; font-size: 13px; color: var(--hint); margin: 12px 0 4px; }
+  input, textarea { width: 100%; padding: 11px; border-radius: 10px; border: 1px solid var(--bg2);
+                    background: var(--bg2); color: var(--text); font-size: 15px; font-family: inherit; }
+  textarea { resize: vertical; min-height: 60px; }
+  .error { color: #e53935; font-size: 13px; padding: 8px 16px 0; min-height: 20px; }
+  .back { background: none; border: 0; color: var(--accent); font-size: 15px; padding: 0; cursor: pointer; }
+  .empty { text-align: center; color: var(--hint); padding: 40px 16px; }
+  /* Кнопка для проверки в обычном браузере (в Telegram используется MainButton) */
+  #fallbackBtn { position: fixed; left: 16px; right: 16px; bottom: 16px; padding: 14px; display: none; width: auto; }
+</style>
+</head>
+<body>
+
+<!-- Каталог -->
+<section id="catalog" class="view active">
+  <header><h1>⚡ Электроника</h1></header>
+  <div class="tabs" id="tabs"></div>
+  <div class="grid" id="grid"></div>
+</section>
+
+<!-- Корзина -->
+<section id="cart" class="view">
+  <header><button class="back" data-go="catalog">← Каталог</button><h1>Корзина</h1></header>
+  <div id="cartList"></div>
+  <div class="total"><span>Итого</span><span id="cartTotal"></span></div>
+</section>
+
+<!-- Оформление -->
+<section id="checkout" class="view">
+  <header><button class="back" data-go="cart">← Корзина</button><h1>Оформление</h1></header>
+  <form id="form" onsubmit="return false">
+    <label for="name">Имя</label>
+    <input id="name" autocomplete="name" required>
+    <label for="phone">Телефон</label>
+    <input id="phone" type="tel" autocomplete="tel" placeholder="+7 900 000-00-00" required>
+    <label for="address">Адрес доставки</label>
+    <textarea id="address" required></textarea>
+    <label for="comment">Комментарий (необязательно)</label>
+    <textarea id="comment"></textarea>
+  </form>
+  <div class="error" id="error"></div>
+  <div class="total"><span>К оплате</span><span id="checkoutTotal"></span></div>
+</section>
+
+<button class="btn" id="fallbackBtn"></button>
+
+<script>
+const tg = window.Telegram?.WebApp;
+const inTelegram = !!(tg && tg.initData);
+if (tg) { tg.ready(); tg.expand(); }
+
+const fmt = n => n.toLocaleString('ru-RU') + ' ₽';
+const $ = id => document.getElementById(id);
+
+let products = [];
+let category = 'Все';
+const cart = {};           // id -> количество
+let view = 'catalog';
+
+const cartCount = () => Object.values(cart).reduce((a, b) => a + b, 0);
+const cartSum = () => Object.entries(cart)
+  .reduce((s, [id, q]) => s + products.find(p => p.id == id).price * q, 0);
+
+function changeQty(id, delta) {
+  cart[id] = (cart[id] || 0) + delta;
+  if (cart[id] <= 0) delete cart[id];
+  tg?.HapticFeedback?.selectionChanged();
+  render();
+}
+
+function qtyControl(p) {
+  const q = cart[p.id];
+  if (!q) return `<button class="btn" onclick="changeQty(${p.id}, 1)">В корзину</button>`;
+  return `<div class="qty"><button onclick="changeQty(${p.id}, -1)">−</button>
+          <span>${q}</span><button onclick="changeQty(${p.id}, 1)">+</button></div>`;
+}
+
+function renderCatalog() {
+  const cats = ['Все', ...new Set(products.map(p => p.category))];
+  $('tabs').innerHTML = cats.map(c =>
+    `<button class="tab ${c === category ? 'active' : ''}" data-cat="${c}">${c}</button>`).join('');
+  const list = category === 'Все' ? products : products.filter(p => p.category === category);
+  $('grid').innerHTML = list.map(p => `
+    <div class="card">
+      <div class="emoji">${p.emoji}</div>
+      <div class="name">${p.name}</div>
+      <div class="desc">${p.description}</div>
+      <div class="price">${fmt(p.price)}</div>
+      ${qtyControl(p)}
+    </div>`).join('');
+}
+
+function renderCart() {
+  const ids = Object.keys(cart);
+  $('cartList').innerHTML = ids.length ? ids.map(id => {
+    const p = products.find(x => x.id == id);
+    return `<div class="row">
+      <div class="emoji">${p.emoji}</div>
+      <div class="info"><div class="name">${p.name}</div><div class="desc">${fmt(p.price)} × ${cart[id]}</div></div>
+      <div class="qty"><button onclick="changeQty(${p.id}, -1)">−</button>
+        <span>${cart[id]}</span><button onclick="changeQty(${p.id}, 1)">+</button></div>
+    </div>`;
+  }).join('') : '<div class="empty">Корзина пуста</div>';
+  $('cartTotal').textContent = fmt(cartSum());
+  $('checkoutTotal').textContent = fmt(cartSum());
+}
+
+function mainButton() {
+  let text = '', visible = true;
+  if (view === 'catalog') { text = `Корзина (${cartCount()}) · ${fmt(cartSum())}`; visible = cartCount() > 0; }
+  if (view === 'cart')     { text = 'Оформить заказ'; visible = cartCount() > 0; }
+  if (view === 'checkout') { text = `Подтвердить · ${fmt(cartSum())}`; }
+
+  if (inTelegram) {
+    tg.MainButton.setText(text);
+    visible ? tg.MainButton.show() : tg.MainButton.hide();
+    view === 'catalog' ? tg.BackButton.hide() : tg.BackButton.show();
+  } else {
+    $('fallbackBtn').textContent = text;
+    $('fallbackBtn').style.display = visible ? 'block' : 'none';
+  }
+}
+
+function go(v) {
+  view = v;
+  document.querySelectorAll('.view').forEach(s => s.classList.toggle('active', s.id === v));
+  window.scrollTo(0, 0);
+  render();
+}
+
+function render() {
+  if (view !== 'catalog' && !cartCount()) return go('catalog');
+  renderCatalog();
+  renderCart();
+  mainButton();
+}
+
+function submitOrder() {
+  const name = $('name').value.trim();
+  const phone = $('phone').value.trim();
+  const address = $('address').value.trim();
+  if (!name || !address || phone.replace(/\D/g, '').length < 10) {
+    $('error').textContent = 'Заполните имя, телефон и адрес';
+    tg?.HapticFeedback?.notificationOccurred('error');
+    return;
+  }
+  $('error').textContent = '';
+  const order = {
+    items: Object.entries(cart).map(([id, qty]) => ({ id: Number(id), qty })),
+    name, phone, address,
+    comment: $('comment').value.trim(),
+  };
+  if (inTelegram) {
+    tg.sendData(JSON.stringify(order));   // данные уходят боту, Mini App закрывается
+  } else {
+    alert('Заказ (в Telegram уйдёт боту):\n' + JSON.stringify(order, null, 2));
+  }
+}
+
+function onMain() {
+  if (view === 'catalog') go('cart');
+  else if (view === 'cart') go('checkout');
+  else submitOrder();
+}
+function onBack() { go(view === 'checkout' ? 'cart' : 'catalog'); }
+
+$('tabs').addEventListener('click', e => {
+  if (e.target.dataset.cat) { category = e.target.dataset.cat; renderCatalog(); }
+});
+document.querySelectorAll('[data-go]').forEach(b => b.addEventListener('click', () => go(b.dataset.go)));
+$('fallbackBtn').addEventListener('click', onMain);
+if (inTelegram) {
+  tg.MainButton.onClick(onMain);
+  tg.BackButton.onClick(onBack);
+  const u = tg.initDataUnsafe?.user;
+  if (u) $('name').value = [u.first_name, u.last_name].filter(Boolean).join(' ');
+}
+
+fetch('products.json').then(r => r.json()).then(data => { products = data; render(); });
+</script>
+</body>
+</html>
