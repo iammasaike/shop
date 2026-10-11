@@ -93,7 +93,8 @@
 
 <script>
 const tg = window.Telegram?.WebApp;
-const inTelegram = !!(tg && tg.initData);
+// При открытии кнопкой клавиатуры initData пустой, поэтому проверяем платформу
+const inTelegram = !!(tg && tg.platform && tg.platform !== 'unknown');
 if (tg) { tg.ready(); tg.expand(); }
 
 const fmt = n => n.toLocaleString('ru-RU') + ' ₽';
@@ -200,7 +201,7 @@ function submitOrder() {
   if (inTelegram) {
     tg.sendData(JSON.stringify(order));   // данные уходят боту, Mini App закрывается
   } else {
-    alert('Заказ (в Telegram уйдёт боту):\n' + JSON.stringify(order, null, 2));
+    $('error').textContent = 'Откройте магазин через бота в Telegram, чтобы оформить заказ';
   }
 }
 
